@@ -1,0 +1,109 @@
+
+body {
+    background-color: seagreen;
+    margin: 0px;
+}
+
+nav.controls {
+    padding: 15px 15px;
+    background-color: darkblue;
+}
+
+nav.controls button {
+    height: 70px;
+    width: 70px;
+    margin: 2px;
+}
+
+.btn-danger:disabled{
+    opacity: 1;
+}
+
+.btn-danger:disabled:hover{
+    opacity: 1;
+}
+
+nav.controls button i {
+    font-size: 50px;
+}
+
+nav.controls i:hover {
+    opacity: 0.5;
+}
+
+section.instructions {
+    height: 50px;
+}
+
+section.instructions span i {
+    padding: 0px 5px;
+    font-size: 50px;
+}
+
+section.instructions span i.played {
+   color: lawngreen;
+}
+
+section.blocks div {
+    display: inline-block;
+    /* display: inline-table; */
+    width: 150px;
+    height: 150px;
+    margin: 7px;
+    border: 4px solid orange;
+    border-radius: 5px;
+}
+
+@media screen and (max-width: 600px){
+    section.blocks div {
+        width: 110px;
+        height: 110px;
+    }
+}
+
+@media screen and (max-width: 450px){
+    section.blocks div {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+section.blocks div.player {
+    background-color: palevioletred;
+    border: 4px solid rgb(65, 3, 65);
+}
+
+section.blocks div.wall {
+    background-color: slategray;
+    border: 4px solid darkgrey;
+}
+
+section.blocks div.exit {
+    background-color: rgb(107, 26, 165);
+    border: 4px solid purple;
+}
+
+h1 {
+    position: absolute;
+	width: 600px;
+	text-align: center;
+	top: 350px;
+	left: 50%;
+	margin-left: -300px;
+	color: darkred;
+    font-weight: bold;
+	font-size: 120px;
+    font-family: cursive;
+}
+
+@media screen and (max-width: 500px){
+    h1 {
+        top: 300px;
+        font-size: 100px;
+    }
+}
+
+
+
+
+
