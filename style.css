@@ -33,6 +33,16 @@ nav.controls i:hover {
 
 section.instructions {
     height: 50px;
+    padding: 5px;
+}
+
+section.instructions span {
+    border: 1px solid white;
+    color: black;
+    font-weight: bold;
+    background-color: lightskyblue;
+    padding: 8px;
+    margin: 5px;
 }
 
 section.instructions span i {
@@ -44,7 +54,7 @@ section.instructions span i.played {
    color: lawngreen;
 }
 
-section.blocks div {
+main.blocks div {
     display: inline-block;
     /* display: inline-table; */
     width: 150px;
@@ -55,30 +65,30 @@ section.blocks div {
 }
 
 @media screen and (max-width: 600px){
-    section.blocks div {
+    main.blocks div {
         width: 110px;
         height: 110px;
     }
 }
 
 @media screen and (max-width: 450px){
-    section.blocks div {
+    main.blocks div {
         width: 80px;
         height: 80px;
     }
 }
 
-section.blocks div.player {
+main.blocks div.player {
     background-color: palevioletred;
     border: 4px solid rgb(65, 3, 65);
 }
 
-section.blocks div.wall {
+main.blocks div.wall {
     background-color: slategray;
     border: 4px solid darkgrey;
 }
 
-section.blocks div.exit {
+main.blocks div.exit {
     background-color: rgb(107, 26, 165);
     border: 4px solid purple;
 }
