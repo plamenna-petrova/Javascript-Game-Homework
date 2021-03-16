@@ -10,9 +10,9 @@ nav.controls {
 }
 
 nav.controls button {
-    height: 70px;
-    width: 70px;
-    margin: 2px;
+    height: 60px;
+    width: 60px;
+    margin: 5px;
 }
 
 .btn-danger:disabled{
@@ -37,7 +37,7 @@ section.instructions {
 }
 
 section.instructions span {
-    border: 1px solid white;
+    border: 2px solid white;
     color: black;
     font-weight: bold;
     background-color: lightskyblue;
@@ -54,20 +54,25 @@ section.instructions span i.played {
    color: lawngreen;
 }
 
+main.blocks {
+    height: 1000px;
+    padding: 0px;
+    margin: auto;
+}
+
 main.blocks div {
-    display: inline-block;
-    /* display: inline-table; */
-    width: 150px;
-    height: 150px;
-    margin: 7px;
+    width: 120px;
+    height: 120px;
+    margin: 10px;
     border: 4px solid orange;
     border-radius: 5px;
+    float: left;
 }
 
 @media screen and (max-width: 600px){
     main.blocks div {
-        width: 110px;
-        height: 110px;
+        width: 100px;
+        height: 100px;
     }
 }
 
@@ -97,13 +102,20 @@ h1 {
     position: absolute;
 	width: 600px;
 	text-align: center;
-	top: 350px;
+	top: 280px;
 	left: 50%;
 	margin-left: -300px;
 	color: darkred;
     font-weight: bold;
-	font-size: 120px;
+	font-size: 100px;
     font-family: cursive;
+    display: none;
+    /* z-index: 5;
+    position: absolute;
+    font-size: 100px;
+    color: darkred;
+    text-align: center;
+    width: 100%; */
 }
 
 @media screen and (max-width: 500px){
@@ -111,6 +123,10 @@ h1 {
         top: 300px;
         font-size: 100px;
     }
+}
+
+* {
+    box-sizing : content-box;
 }
 
 
