@@ -1,6 +1,8 @@
 // global variable that stores the programming instructions
 var instructions = [];
 
+var currentInstruction = 0;
+
 var map = [
     [2, 0, 1],
     [0, 1, 1],
@@ -23,6 +25,12 @@ var bigMap = [
     [0, 0, 0, 0, 0, 3]
 ]
 
+// This will be our loaded map
+var currentLevel = map;
+renderMap(currentLevel);
+
+let player = findPlayerOnPosition(currentLevel);
+
 // get all buttons instances and attach click event
 var allButtons = document.querySelectorAll("button");
 for (var i = 0; i < allButtons.length; i++) {
@@ -34,6 +42,7 @@ for (var i = 0; i < allButtons.length; i++) {
 // render instructions on the screen 
 function onButtonClick(event) {
     var buttonText = event.target.innerHTML;
+    console.log(buttonText);
     instructions.push(buttonText);
     var instructionsSection = document.querySelector(".instructions");
     var span = document.createElement("span");
@@ -91,7 +100,6 @@ function renderMap(map) {
             mainEl.appendChild(div);
         }
     }
-
 }
 
 function showMessage(message) {
@@ -103,6 +111,81 @@ function showMessage(message) {
 function hideMessage() {
     var heading = document.querySelector('h1');
     heading.style.display = "none";
+}
+
+function findPlayerOnPosition(map) {
+    
+    for (var i = 0; i < map.length; i++) {
+        for (var j = 0; j < map[i].length; j++) {
+            if (map[i][j] === 2) {
+               return {x: i, y: j};
+            }
+        }
+    }
+
+}
+
+function playMove() {
+
+    let oldPosition = {
+        x: player.x,
+        y: player.y
+    };
+
+    // reading the next instruction from the instructions array
+    let instruction = instructions[currentInstruction];
+    currentInstruction++;
+    // console.log(instruction);
+
+    if (instruction === undefined) {
+        showMessage("Game over !");
+    }
+
+    // update the map matrix
+    console.log(player);
+    console.log(instruction);
+    switch(instruction) {
+        case "Left":
+            player.x-=1;
+            console.log("debug");
+            break;
+        case "Right":
+            player.x+=1;
+            break;
+        case "Down":
+            player.y+=1;
+            break;
+        case "Up":
+            player.y-=1;
+            break;
+        case "Start":
+            showMessage("Game over!");
+            break;                
+    }
+    // check if the move is valid
+    try {
+        if (currentLevel[player.y][player.x] === 0) {
+            currentLevel[oldPosition.y][oldPosition.x] = 0;
+            currentLevel[player.y][player.x] = 2;
+        } else if (map[player.y][player.x] === 3){
+            showMessage("You win!");
+            currentLevel[oldPosition.y][oldPosition.x] = 0;
+            currentLevel[player.y][player.x] = 2;
+        } else if (map[player.y][player.x] === 1) {
+            showMessage("Game over!");
+            currentLevel[oldPosition.y][oldPosition.x] = 0;
+            currentLevel[player.y][player.x] = 2;
+        } else {
+            showMessage("Game over!");
+        }
+    } catch {
+        showMessage("Game over!");  
+    }
+
+    console.log(player);
+    
+    // render the updated map array
+    renderMap(map);
 }
 
 renderMap(map);
