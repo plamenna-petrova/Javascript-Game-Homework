@@ -1,8 +1,4 @@
-// global variable that stores the programming instructions
-var instructions = [];
-
-var currentInstruction = 0;
-
+// the maps for the game: 2 = player, 1 = wall, 0 = empty, 3 = player
 var map = [
     [2, 0, 1],
     [0, 1, 1],
@@ -10,8 +6,8 @@ var map = [
 ];
 
 var map1 = [
-    [2, 0, 1, 1],
-    [0, 1, 1, 1],
+    [2, 0, 1, 0],
+    [0, 1, 0, 1],
     [0, 0, 3]
 ];
 
@@ -19,17 +15,33 @@ var bigMap = [
     [2, 0, 1, 0, 1, 0],
     [0, 1, 1, 1, 1, 1],
     [0, 0, 0, 1, 1, 0],
-    [1, 0, 1, 0, 1, 0],
+    [0, 0, 1, 0, 1, 0],
     [0, 1, 1, 0, 0, 1],
     [0, 0, 1, 1, 1, 1],
     [0, 0, 0, 0, 0, 3]
 ]
 
-// This will be our loaded map
-var currentLevel = map;
-renderMap(currentLevel);
+var maps = [map, map1, bigMap];
+var currentIndex = 0;
+var currentMap = initLvl(currentIndex);
 
-let player = findPlayerOnPosition(currentLevel);
+// This will be our loaded map
+// var currentLevel = map;
+// renderMap(currentLevel);
+
+// var player = findPlayerOnPosition(currentLevel);
+
+var player = findPlayerOnPosition(currentMap);
+var message = document.querySelector("h1");
+var currentInstruction = 0;
+
+function setMessage(text) {
+    message.style.display = "block";
+    message.innerHTML = text;
+}
+
+// global variable that stores the programming instructions
+var instructions = [];
 
 // get all buttons instances and attach click event
 var allButtons = document.querySelectorAll("button");
@@ -43,6 +55,9 @@ for (var i = 0; i < allButtons.length; i++) {
 function onButtonClick(event) {
     var buttonText = event.target.innerHTML;
     console.log(buttonText);
+    if (buttonText == "Start") {
+        start();
+    }
     instructions.push(buttonText);
     var instructionsSection = document.querySelector(".instructions");
     var span = document.createElement("span");
@@ -57,9 +72,9 @@ function renderMap(map) {
 
     // calculate proper width/height of the game field 
     // formula == (div_width + 2*div_border + 2*div_margin) * div_count 
-    let maxLength = 0;
+    var maxLength = 0;
 
-    for (let i = 0; i < map.length; i++) {
+    for (var i = 0; i < map.length; i++) {
         if (maxLength < map[i].length) {
             maxLength = map[i].length;
         }
@@ -69,18 +84,18 @@ function renderMap(map) {
         return alert("Invalid map definition");
     }
 
-    let mainWidth = (120+2*4+2*10)*maxLength;   
+    var mainWidth = (120+2*4+2*10)*maxLength;   
 
     const mainEl = document.querySelector('main');
     mainEl.innerHTML = "";
     mainEl.style.width = mainWidth+"px";    
 
     // loop through the map
-    for (let i = 0; i < map.length; i++) {
-        for (let j = 0; j < map[i].length; j++) {
+    for (var i = 0; i < map.length; i++) {
+        for (var j = 0; j < map[i].length; j++) {
             // create div elements with proper classname
-            let div = document.createElement('div');
-            let className = "";
+            var div = document.createElement('div');
+            var className = "";
             switch(map[i][j]) {
                 case 1:
                     className = "wall";
@@ -102,16 +117,16 @@ function renderMap(map) {
     }
 }
 
-function showMessage(message) {
-    var heading = document.querySelector('h1');
-    heading.innerHTML = message;
-    heading.style.display = "block";
-}
+// function showMessage(message) {
+//     var heading = document.querySelector('h1');
+//     heading.innerHTML = message;
+//     heading.style.display = "block";
+// }
 
-function hideMessage() {
-    var heading = document.querySelector('h1');
-    heading.style.display = "none";
-}
+// function hideMessage() {
+//     var heading = document.querySelector('h1');
+//     heading.style.display = "none";
+// }
 
 function findPlayerOnPosition(map) {
     
@@ -125,20 +140,25 @@ function findPlayerOnPosition(map) {
 
 }
 
+// sets wait time for the playMove function
+function start(time) {
+    setTimeout(playMove, time);
+}
+
 function playMove() {
 
-    let oldPosition = {
+    var oldPosition = {
         x: player.x,
         y: player.y
     };
 
     // reading the next instruction from the instructions array
-    let instruction = instructions[currentInstruction];
+    var instruction = instructions[currentInstruction];
     currentInstruction++;
     // console.log(instruction);
 
     if (instruction === undefined) {
-        showMessage("Game over !");
+        setMessage("Game over !");
     }
 
     // update the map matrix
@@ -158,34 +178,49 @@ function playMove() {
         case "Up":
             player.y-=1;
             break;
-        case "Start":
-            showMessage("Game over!");
+        default:
             break;                
     }
     // check if the move is valid
     try {
-        if (currentLevel[player.y][player.x] === 0) {
-            currentLevel[oldPosition.y][oldPosition.x] = 0;
-            currentLevel[player.y][player.x] = 2;
-        } else if (map[player.y][player.x] === 3){
-            showMessage("You win!");
-            currentLevel[oldPosition.y][oldPosition.x] = 0;
-            currentLevel[player.y][player.x] = 2;
-        } else if (map[player.y][player.x] === 1) {
-            showMessage("Game over!");
-            currentLevel[oldPosition.y][oldPosition.x] = 0;
-            currentLevel[player.y][player.x] = 2;
+        if (currentMap[player.y][player.x] === 0) {
+            currentMap[oldPosition.y][oldPosition.x] = 0;
+            currentMap[player.y][player.x] = 2;
+            start(500);
+        } else if (currentMap[player.y][player.x] === 3){
+            setMessage("You win!");
+            currentMap[oldPosition.y][oldPosition.x] = 0;
+            currentMap[player.y][player.x] = 2;
+            currentIndex++;
+            if (currentIndex < maps.length) {
+                setTimeout(function() {
+                   currentMap = initLvl(currentIndex);
+                }, 3000);
+            }
+            else {
+                setMessage("The game has been completed !");
+            }
         } else {
-            showMessage("Game over!");
+            setMessage("Game over!");
         }
     } catch {
-        showMessage("Game over!");  
+        setMessage("Game over!");  
     }
-
-    console.log(player);
     
     // render the updated map array
-    renderMap(map);
+    renderMap(currentMap);
 }
 
-renderMap(map);
+function initLvl(lvlIndex) {
+
+    var map = maps[lvlIndex];
+    renderMap(map);
+    player = findPlayerOnPosition(map);
+    document.querySelector("h1").style.display = "none";
+    instructions = [];
+    currentInstruction = 0;
+    document.querySelector(".instructions").innerHTML = "";
+    console.log("Debugg");
+    return map;
+
+}
