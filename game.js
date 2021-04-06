@@ -25,6 +25,8 @@ var maps = [map, map1, bigMap];
 var currentIndex = 0;
 var currentMap = initLvl(currentIndex);
 
+var toh;
+
 // This will be our loaded map
 // var currentLevel = map;
 // renderMap(currentLevel);
@@ -49,24 +51,33 @@ for (var i = 0; i < allButtons.length; i++) {
     allButtons[i].addEventListener("click", onButtonClick);
 }
 
+// subscribing to the custom event onPlayerMove
+
+document.addEventListener("moveMade", onPlayerMove);
+// document.addEventListener("moveMade", console.log);
+
+// document.addEventListener("moveMade", function() { onPlayerMove(); });
+// document.addEventListener("moveMade", function() { onPlayerMove(); });
+
 // button click event handler
 // add the selected instructions to the instructions list
 // render instructions on the screen 
 function onButtonClick(event) {
     var buttonText = event.target.innerHTML;
-    console.log(buttonText);
+    // console.log(buttonText);
     if (buttonText == "Start") {
-        start();
+        // start();
+        setTimeout(playMove, 2000);
     }
     instructions.push(buttonText);
     var instructionsSection = document.querySelector(".instructions");
     var span = document.createElement("span");
     span.innerHTML = buttonText;
     instructionsSection.appendChild(span);
-    console.log(instructions);
+    // console.log(instructions);
 }
 
-console.log(allButtons);
+// console.log(allButtons);
 
 function renderMap(map) {
 
@@ -84,11 +95,11 @@ function renderMap(map) {
         return alert("Invalid map definition");
     }
 
-    var mainWidth = (120+2*4+2*10)*maxLength;   
+    var mainWidth = (120 + 2 * 4 + 2 * 10) * maxLength;
 
     const mainEl = document.querySelector('main');
     mainEl.innerHTML = "";
-    mainEl.style.width = mainWidth+"px";    
+    mainEl.style.width = mainWidth + "px";
 
     // loop through the map
     for (var i = 0; i < map.length; i++) {
@@ -96,7 +107,7 @@ function renderMap(map) {
             // create div elements with proper classname
             var div = document.createElement('div');
             var className = "";
-            switch(map[i][j]) {
+            switch (map[i][j]) {
                 case 1:
                     className = "wall";
                     break;
@@ -105,11 +116,11 @@ function renderMap(map) {
                     break;
                 case 3:
                     className = "exit";
-                    break;        
+                    break;
             }
-            if(className) {
+            if (className) {
                 // set a class name to the current div
-               div.setAttribute('class', className); 
+                div.setAttribute('class', className);
             }
             // append div element to DOM tree
             mainEl.appendChild(div);
@@ -129,11 +140,14 @@ function renderMap(map) {
 // }
 
 function findPlayerOnPosition(map) {
-    
+
     for (var i = 0; i < map.length; i++) {
         for (var j = 0; j < map[i].length; j++) {
             if (map[i][j] === 2) {
-               return {x: i, y: j};
+                return {
+                    x: i,
+                    y: j
+                };
             }
         }
     }
@@ -162,65 +176,90 @@ function playMove() {
     }
 
     // update the map matrix
-    console.log(player);
-    console.log(instruction);
-    switch(instruction) {
+    // console.log(player);
+    // console.log(instruction);
+    switch (instruction) {
         case "Left":
-            player.x-=1;
-            console.log("debug");
+            player.x -= 1;
+            // console.log("debug");
             break;
         case "Right":
-            player.x+=1;
+            player.x += 1;
             break;
         case "Down":
-            player.y+=1;
+            player.y += 1;
             break;
         case "Up":
-            player.y-=1;
+            player.y -= 1;
             break;
         default:
-            break;                
+            break;
     }
     // check if the move is valid
     try {
         if (currentMap[player.y][player.x] === 0) {
             currentMap[oldPosition.y][oldPosition.x] = 0;
             currentMap[player.y][player.x] = 2;
-            start(500);
-        } else if (currentMap[player.y][player.x] === 3){
+            var event = new CustomEvent("moveMade", {
+                detail: {
+                    player: player
+                }
+            });
+            toh = setTimeout(playMove, 2000);         
+            document.dispatchEvent(event);
+            // start(500);
+        } else if (currentMap[player.y][player.x] === 3) {
             setMessage("You win!");
             currentMap[oldPosition.y][oldPosition.x] = 0;
             currentMap[player.y][player.x] = 2;
             currentIndex++;
             if (currentIndex < maps.length) {
-                setTimeout(function() {
-                   currentMap = initLvl(currentIndex);
+                setTimeout(function () {
+                    currentMap = initLvl(currentIndex);
                 }, 3000);
-            }
-            else {
+            } else {
                 setMessage("The game has been completed !");
             }
         } else {
             setMessage("Game over!");
         }
     } catch {
-        setMessage("Game over!");  
+        setMessage("Game over!");
     }
-    
+
     // render the updated map array
     renderMap(currentMap);
 }
 
 function initLvl(lvlIndex) {
 
-    var map = maps[lvlIndex];
+    var map = JSON.parse(JSON.stringify(maps[lvlIndex]));
+    // var map = maps[lvlIndex];
     renderMap(map);
+    // if (lvlIndex % 2 === 0) {
+    //     document.addEventListener("moveMade", onPlayerMove);
+    // } else {
+    //     document.removeEventListener("moveMade", onPlayerMove);
+    // }
     player = findPlayerOnPosition(map);
     document.querySelector("h1").style.display = "none";
     instructions = [];
     currentInstruction = 0;
     document.querySelector(".instructions").innerHTML = "";
-    console.log("Debugg");
+    // console.log("Debugg");
     return map;
+
+}
+
+function onPlayerMove(e) {
+
+    // console.log("debugg");
+    var points = document.querySelector(".points");
+    points.innerText--;
+    if (points.innerText < 0) {
+        clearTimeout(toh);
+        setMessage("Game over!");  
+    }
+    console.log(points);
 
 }
