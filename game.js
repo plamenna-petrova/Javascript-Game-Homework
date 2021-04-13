@@ -54,6 +54,34 @@ for (var i = 0; i < allButtons.length; i++) {
 // subscribing to the custom event onPlayerMove
 
 document.addEventListener("moveMade", onPlayerMove);
+
+document.addEventListener("keydown", onKeyboardClick);
+function onKeyboardClick(event) {
+    // console.log(event);
+    switch (event.keyCode) {
+        // arrow right
+        case 39:
+            var button = document.querySelector("#right");
+            break; 
+        case 37:
+            var button = document.querySelector("#left");
+            break;
+        case 38:
+            var button = document.querySelector("#up");
+            break;
+        case 40:
+            var button = document.querySelector("#down");
+            break;
+        case 13:
+            var button = document.querySelector("#play");
+            break;                
+    }
+    if (button) {
+        button.click();
+    }
+    event.preventDefault();
+}
+
 // document.addEventListener("moveMade", console.log);
 
 // document.addEventListener("moveMade", function() { onPlayerMove(); });
@@ -67,7 +95,7 @@ function onButtonClick(event) {
     // console.log(buttonText);
     if (buttonText == "Start") {
         // start();
-        setTimeout(playMove, 2000);
+        setTimeout(playMove, 300);
     }
     instructions.push(buttonText);
     var instructionsSection = document.querySelector(".instructions");
@@ -95,7 +123,7 @@ function renderMap(map) {
         return alert("Invalid map definition");
     }
 
-    var mainWidth = (120 + 2 * 4 + 2 * 10) * maxLength;
+    var mainWidth = (50 + 2 * 4 + 2 * 10) * maxLength;
 
     const mainEl = document.querySelector('main');
     mainEl.innerHTML = "";
@@ -168,8 +196,12 @@ function playMove() {
 
     // reading the next instruction from the instructions array
     var instruction = instructions[currentInstruction];
+    var section = document.querySelector(".instructions");
+    if (section != null) {
+        section.children[currentInstruction].setAttribute("class", "executed");
+    }
     currentInstruction++;
-    // console.log(instruction);
+    console.log(section.children);
 
     if (instruction === undefined) {
         setMessage("Game over !");
@@ -205,7 +237,7 @@ function playMove() {
                     player: player
                 }
             });
-            toh = setTimeout(playMove, 2000);         
+            toh = setTimeout(playMove, 300);         
             document.dispatchEvent(event);
             // start(500);
         } else if (currentMap[player.y][player.x] === 3) {
@@ -216,7 +248,7 @@ function playMove() {
             if (currentIndex < maps.length) {
                 setTimeout(function () {
                     currentMap = initLvl(currentIndex);
-                }, 3000);
+                }, 1000);
             } else {
                 setMessage("The game has been completed !");
             }
